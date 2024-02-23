@@ -50,13 +50,12 @@ async def test_command(interaction: discord.Interaction, n: int = 4):
 async def pal_reboot(interaction: discord.Interaction):
     await interaction.response.defer(thinking=True)
     try:
-        result = subprocess.run(
-            ["sudo", "systemctl", "restart", "palworld-dedicated.service"], encoding=charset)
-        
-        await interaction.followup.send("再起動コマンドを発行しました\n"+result.stdout, ephemeral=False)
+        result = subprocess.run("sudo systemctl restart palworld-dedicated.service", encoding=charset,shell=True)
+        print(result) 
+        await interaction.followup.send("再起動コマンドを発行しました", ephemeral=False,)
 
     except Exception as e:
-        await interaction.followup.send("パルワールドの再起動時にエラーが発生しました。", ephemeral=False)
+        await interaction.followup.send("パルワールドの再起動時にエラーが発生しました。\n"+str(e), ephemeral=False)
         return
 
 
@@ -65,9 +64,9 @@ async def pal_reboot(interaction: discord.Interaction):
 async def sudo_test(interaction: discord.Interaction):
     await interaction.response.defer(thinking=True)
     try:
-        result = subprocess.run(["sudo", "whoami"], encoding=charset)
+        result = subprocess.run("sudo whoami", encoding=charset,shell=True)
 
-        await interaction.followup.send(result.stdout, ephemeral=False)
+        await interaction.followup.send(result, ephemeral=False)
     except Exception as e:
         await interaction.followup.send(str(e), ephemeral=False)
         return
